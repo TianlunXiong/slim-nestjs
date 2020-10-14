@@ -1,6 +1,6 @@
 {
   "name": "slim-nestjs",
-  "version": "0.0.5",
+  "version": "0.0.5-beta1",
   "description": "a slim version of the nestjs",
   "main": "dist/src/index.js",
   "files": [
@@ -28,15 +28,15 @@
     "@babel/plugin-proposal-object-rest-spread": "^7.11.0",
     "@babel/plugin-transform-runtime": "^7.11.5",
     "@babel/preset-env": "^7.11.5",
-    "@babel/preset-typescript": "^7.10.4",
+    "@babel/preset-typescript": "^7.10.4"
+  },
+  "dependencies": {
     "@types/koa": "^2.11.4",
     "@types/koa-router": "^7.4.1",
     "@types/node": "^14.11.2",
+    "koa": "^2.13.0",
+    "koa-router": "^9.4.0",
     "ts-node-dev": "^1.0.0-pre.63",
     "typescript": "^4.0.3"
-  },
-  "dependencies": {
-    "koa": "^2.13.0",
-    "koa-router": "^9.4.0"
   }
 }
