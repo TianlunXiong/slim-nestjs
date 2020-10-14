@@ -1,0 +1,15 @@
+{
+  "presets": [
+    [
+      "@babel/env",
+      {
+        "targets": "> 90%"
+      }
+    ],
+    "@babel/typescript"
+  ],
+  "plugins": [
+    "@babel/plugin-transform-runtime",
+    "@babel/proposal-class-properties"
+  ]
+}

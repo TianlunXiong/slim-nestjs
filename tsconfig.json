@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "CommonJS",
+    "declaration": true,
+    "emitDeclarationOnly": false,
+    "moduleResolution": "node",
+    "allowJs": true,
+    "strict": true,
+    "isolatedModules": false,
+    "esModuleInterop": true,
+    "outDir": "dist",
+    "experimentalDecorators": true,
+  },
+  "include": ["src/**/*", "test/**/*"]
+}
