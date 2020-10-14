@@ -2728,6 +2728,23 @@ slash@^2.0.0:
   resolved "https://registry.npm.taobao.org/slash/download/slash-2.0.0.tgz?cache=0&sync_timestamp=1593529703136&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fslash%2Fdownload%2Fslash-2.0.0.tgz#de552851a1759df3a8f206535442f5ec4ddeab44"
   integrity sha1-3lUoUaF1nfOo8gZTVEL17E3eq0Q=
 
+slim-nestjs@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.npmjs.org/slim-nestjs/-/slim-nestjs-0.0.1.tgz#6634a0bbff439b39e67124bbb99031845083f640"
+  integrity sha512-Zrygc8mzS3cMiinfo6krgSb/SFj2RbckA1XNAFSImBf4HAL5Ko1TO6Y6SKa8DPEBNgAxriDsc3SNHlTkgnCdRA==
+  dependencies:
+    koa "^2.13.0"
+    koa-router "^9.4.0"
+
+slim-nestjs@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.npmjs.org/slim-nestjs/-/slim-nestjs-0.0.2.tgz#587aee496fd5557912a19e20318c803713e8a012"
+  integrity sha512-/Fft9ZZ25slOVOqxbVKVKpg/PBEiMeZao7l9SQyBcBF4TKfvTWdRyI4u8JZA0N65qLkblT+Pqm4FI9/LCVkLsg==
+  dependencies:
+    koa "^2.13.0"
+    koa-router "^9.4.0"
+    slim-nestjs "^0.0.1"
+
 snapdragon-node@^2.0.1:
   version "2.1.1"
   resolved "https://registry.npm.taobao.org/snapdragon-node/download/snapdragon-node-2.1.1.tgz#6c175f86ff14bdb0724563e8f3c1b021a286853b"

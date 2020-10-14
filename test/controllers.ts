@@ -1,5 +1,5 @@
 import { Context } from 'koa';
-import { Controller, Get } from '../src/controller'
+import { Controller, Get } from '../src/controller';
 
 @Controller('api')
 class Xiaobai {
