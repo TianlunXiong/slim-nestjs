@@ -11,8 +11,4 @@ interface IMiddleWareConstructor extends IConstructor {
 
 type MiddleWareFunction = (ctx: Context, next: Next) => any;
 
-export {
-  IMiddleWareConstructor,
-  MiddleWare,
-  MiddleWareFunction,
-}
+export { IMiddleWareConstructor, MiddleWare, MiddleWareFunction };

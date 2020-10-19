@@ -1,7 +1,5 @@
 import { Context, Next } from 'koa';
-import { Controller, Get } from '../src/controller';
-import { Injectable } from '../src/injector';
-import { MiddleWare } from '../src/middleware';
+import { Controller, Get, Injectable, MiddleWare } from '../src';
 
 @Injectable
 class AllList {
@@ -16,28 +14,24 @@ class AllList {
 
 class LikeMiddleWare implements MiddleWare {
   async use(ctx: Context, next: Next) {
-    console.log('123')
-    ctx.body = 'jiu'
+    ctx.body = 'jiu';
     await next();
   }
 }
 
-@Controller('api')
+@Controller()
 class Xiaobai {
   constructor(private inject: AllList) {}
 
-  @Get('student')
+  @Get()
   score(ctx: Context) {
-    ctx.body += 'Hello';
+    ctx.body = 'Hello';
   }
-  
+
   @Get('student/:id')
   async student(ctx: Context) {
     ctx.body = 'Hello, Student1';
   }
 }
 
-export {
-  LikeMiddleWare,
-  Xiaobai,
-}
+export { LikeMiddleWare, Xiaobai };

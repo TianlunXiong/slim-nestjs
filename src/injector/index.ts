@@ -8,7 +8,4 @@ function Injectable(_constructor: Function) {
   }
 }
 
-export {
-  Injectable,
-  injectableClassSet,
-}
+export { Injectable, injectableClassSet };

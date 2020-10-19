@@ -1,7 +1,6 @@
 import AppCore from './app.core';
 import { routerMapper } from '../controller';
 
-
 class App extends AppCore {
   constructor() {
     super();
@@ -9,7 +8,8 @@ class App extends AppCore {
 
   routes() {
     this.routeMapping(routerMapper);
-    this.use(this.router.routes());
+    const routeMiddleware = this.router.routes();
+    this.use(routeMiddleware);
   }
 }
 

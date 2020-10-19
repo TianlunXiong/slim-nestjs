@@ -1,6 +1,13 @@
 enum HttpMethod {
-  get = 'get',
-  post = 'post'
+  GET = 'get',
+  POST = 'post',
+  OPTIONS = 'options',
+  PUT = 'put',
+  HEAD = 'head',
+  DELETE = 'delete',
+  LINK = 'link',
+  UNLINK = 'unlink',
+  ALL = 'all',
 }
 
 /**
@@ -79,7 +86,7 @@ class ControllerRouter {
 export {
   IConstructor,
   IControllerRoute,
-  HttpMethod,
   ControllerToRouterMapper,
   ControllerRouter,
+  HttpMethod,
 }
