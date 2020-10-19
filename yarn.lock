@@ -2574,6 +2574,11 @@ redent@^1.0.0:
     indent-string "^2.1.0"
     strip-indent "^1.0.1"
 
+reflect-metadata@^0.1.13:
+  version "0.1.13"
+  resolved "https://registry.npmjs.org/reflect-metadata/-/reflect-metadata-0.1.13.tgz#67ae3ca57c972a2aa1642b10fe363fe32d49dc08"
+  integrity sha512-Ts1Y/anZELhSsjMcU605fU9RE4Oi3p5ORujwbIKXfWa+0Zxs510Qrmrce5/Jowq3cHSZSJqBjypxmHarc+vEWg==
+
 regenerate-unicode-properties@^8.2.0:
   version "8.2.0"
   resolved "https://registry.npm.taobao.org/regenerate-unicode-properties/download/regenerate-unicode-properties-8.2.0.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fregenerate-unicode-properties%2Fdownload%2Fregenerate-unicode-properties-8.2.0.tgz#e5de7111d655e7ba60c057dbe9ff37c87e65cdec"
@@ -2727,23 +2732,6 @@ slash@^2.0.0:
   version "2.0.0"
   resolved "https://registry.npm.taobao.org/slash/download/slash-2.0.0.tgz?cache=0&sync_timestamp=1593529703136&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fslash%2Fdownload%2Fslash-2.0.0.tgz#de552851a1759df3a8f206535442f5ec4ddeab44"
   integrity sha1-3lUoUaF1nfOo8gZTVEL17E3eq0Q=
-
-slim-nestjs@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.npmjs.org/slim-nestjs/-/slim-nestjs-0.0.1.tgz#6634a0bbff439b39e67124bbb99031845083f640"
-  integrity sha512-Zrygc8mzS3cMiinfo6krgSb/SFj2RbckA1XNAFSImBf4HAL5Ko1TO6Y6SKa8DPEBNgAxriDsc3SNHlTkgnCdRA==
-  dependencies:
-    koa "^2.13.0"
-    koa-router "^9.4.0"
-
-slim-nestjs@^0.0.2:
-  version "0.0.2"
-  resolved "https://registry.npmjs.org/slim-nestjs/-/slim-nestjs-0.0.2.tgz#587aee496fd5557912a19e20318c803713e8a012"
-  integrity sha512-/Fft9ZZ25slOVOqxbVKVKpg/PBEiMeZao7l9SQyBcBF4TKfvTWdRyI4u8JZA0N65qLkblT+Pqm4FI9/LCVkLsg==
-  dependencies:
-    koa "^2.13.0"
-    koa-router "^9.4.0"
-    slim-nestjs "^0.0.1"
 
 snapdragon-node@^2.0.1:
   version "2.1.1"

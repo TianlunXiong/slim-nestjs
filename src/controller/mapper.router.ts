@@ -1,8 +1,13 @@
-type IController = { new (): any };
-
 enum HttpMethod {
   get = 'get',
   post = 'post'
+}
+
+/**
+ * @description 普通类的构造函数
+ */
+interface IConstructor {
+  new (...args: any[]): {}
 }
 
 interface IControllerRoute {
@@ -13,17 +18,17 @@ interface IControllerRoute {
 }
 
 class ControllerToRouterMapper {
-  mapping = new Map<IController, ControllerRouter>()
+  mapping = new Map<IConstructor, ControllerRouter>()
 
-  setMapping(target: IController, controllerRouter: ControllerRouter) {
+  setMapping(target: IConstructor, controllerRouter: ControllerRouter) {
     this.mapping.set(target, controllerRouter);
   }
 
-  hasRouter(target: IController) : boolean {
+  hasRouter(target: IConstructor) : boolean {
     return this.mapping.has(target);
   }
 
-  getRouter(target: IController) : ControllerRouter | undefined {
+  getRouter(target: IConstructor) : ControllerRouter | undefined {
     return this.mapping.get(target) || undefined;
   }
 
@@ -72,7 +77,7 @@ class ControllerRouter {
 }
 
 export {
-  IController,
+  IConstructor,
   IControllerRoute,
   HttpMethod,
   ControllerToRouterMapper,

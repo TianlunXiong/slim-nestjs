@@ -11,6 +11,7 @@
     "esModuleInterop": true,
     "outDir": "dist",
     "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   },
   "include": ["src/**/*", "test/**/*"]
 }

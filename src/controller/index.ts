@@ -1,12 +1,11 @@
-import process from 'process';
-import { ControllerToRouterMapper, ControllerRouter, IController, HttpMethod } from './mapper.router';
+import { ControllerToRouterMapper, ControllerRouter, HttpMethod, IConstructor } from './mapper.router';
 
 const routerMapper = new ControllerToRouterMapper();
 
-function Controller(prefix: string) {
-  return function(target: IController) {
-    if (routerMapper.hasRouter(target)) {
-      const controllerRouter = routerMapper.getRouter(target);
+function Controller<T extends IConstructor>(prefix: string) {
+  return function(constructor: T) {
+    if (routerMapper.hasRouter(constructor)) {
+      const controllerRouter = routerMapper.getRouter(constructor);
       controllerRouter?.setPrefix(prefix);
     }
   }
