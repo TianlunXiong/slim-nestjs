@@ -2,6 +2,7 @@ import Koa from 'koa';
 import Router from 'koa-router';
 import {
   ControllerToRouterMapper,
+  HttpMethod,
   IConstructor,
 } from '../controller/mapper.router';
 import { MiddleWareFunction, MiddleWare } from '../middleware';
@@ -9,7 +10,8 @@ import { injectableClassSet } from '../injector';
 
 class AppCore extends Koa {
   router = new Router();
-  controllerToMiddlewareMapping = new Map<IConstructor, MiddleWareFunction[]>();
+  controllerToMiddlewareMapping = new Map<IConstructor, IControllerMiddleWare[]>();
+  routerGraph = new Map<string, {}>();
 
   constructor() {
     super();
@@ -25,7 +27,16 @@ class AppCore extends Koa {
         const rule = `/${prefix}/${pathRule}`
           .replace(/\/+/, '/')
           .replace(/\/$/, '');
-        if (middlewares.length) this.router.use(rule, ...middlewares);
+        if (middlewares.length) {
+          for (let i = 0; i < middlewares.length; i += 1) {
+            const { useFn, method } = middlewares[i];
+            if (method) {
+              this.router[method](rule, useFn);
+            } else {
+              this.router.use(rule, useFn);
+            }
+          }
+        }
         const controller = DependenceFactory.create<{
           [method: string]: Function;
         }>(Controller);
@@ -46,6 +57,9 @@ class AppCore extends Koa {
   useForRoutes<T extends MiddleWare>(
     middlewareCtor: { new (...args: any[]): T },
     ctor: IConstructor,
+    config?: {
+      method: HttpMethod
+    }
   ): void;
   useForRoutes<T extends MiddleWare>(
     middlewareCtor: { new (...args: any[]): T },
@@ -53,25 +67,54 @@ class AppCore extends Koa {
   ): void;
   useForRoutes<T extends MiddleWare>(
     middlewareCtor: { new (...args: any[]): T },
-    params: IConstructor | string,
+    params: IPathParams,
+  ): void;
+  useForRoutes<T extends MiddleWare>(
+    middlewareCtor: { new (...args: any[]): T },
+    params: IConstructor | string | IPathParams,
+    config?: {
+      method: HttpMethod
+    }
   ) {
     const middleware = DependenceFactory.create<MiddleWare>(middlewareCtor);
     const useFn: MiddleWareFunction = middleware.use.bind(middleware);
     if (typeof params === 'string') {
       const rule = params;
       this.router.use(rule, useFn);
+    } else if (typeof params === 'object') {
+      const { path, method } = params;
+      this.router[method](path, useFn);
     } else {
       const Ctor = params; // Controller
+      const useFnWrapper: IControllerMiddleWare = {
+        useFn,
+      }
+      if (config) {
+        const { method } = config;
+        if (method) {
+          useFnWrapper.method = method;
+        }
+      }
       if (!this.controllerToMiddlewareMapping.has(Ctor)) {
-        const middlewares: MiddleWareFunction[] = [];
-        middlewares.push(useFn);
+        const middlewares: IControllerMiddleWare[] = [];
+        middlewares.push(useFnWrapper);
         this.controllerToMiddlewareMapping.set(Ctor, middlewares);
       } else {
         const middlewares = this.controllerToMiddlewareMapping.get(Ctor);
-        middlewares?.push(useFn);
+        middlewares?.push(useFnWrapper);
       }
     }
   }
+}
+
+interface IControllerMiddleWare {
+  useFn: MiddleWareFunction;
+  method?: HttpMethod;
+}
+
+interface IPathParams {
+  path: string;
+  method: HttpMethod;
 }
 
 class DependenceFactory {
@@ -114,5 +157,25 @@ class Dependence<T> {
     this.children?.push(c);
   }
 }
+
+class MiddlewareNode {
+  name = '';
+
+  setName(str: string) {
+    this.name = str;
+  }
+}
+
+
+class ControllerNode {
+  name = '';
+  middlewares: MiddlewareNode[] = [];
+  ctor: IConstructor | null = null;
+
+  setName(str: string) {
+    this.name = str;
+  }
+}
+
 
 export default AppCore;

@@ -69,4 +69,5 @@ export {
   Head,
   Link,
   Unlink,
+  HttpMethod,
 };
