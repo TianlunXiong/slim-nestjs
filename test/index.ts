@@ -5,7 +5,6 @@ const app = new App();
 
 app.use(async (ctx, next) => {
   await next();
-  console.log('123')
 })
 app.useForRoutes(LikeMiddleWare, '/api');
 app.useForRoutes(LikeMiddleWare, {

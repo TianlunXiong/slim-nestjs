@@ -1,13 +1,13 @@
 {
   "name": "slim-nestjs",
   "version": "0.0.5-beta1",
-  "description": "a slim version of the nestjs",
+  "description": "A Dependency-Inject Framework based on Koa.",
   "main": "dist/src/index.js",
   "files": [
     "dist/**/*"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tsnd ./test/index.ts",
     "prepublish": "tsc",
     "compile": "tsc"
   },

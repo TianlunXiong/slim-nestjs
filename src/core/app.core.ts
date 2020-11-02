@@ -118,8 +118,6 @@ interface IPathParams {
 }
 
 class DependenceFactory {
-  static create<T>(Constructor: { new (...args: any[]): T }): T;
-  static create<T>(Constructor: { new (...args: any[]): T }): T;
   static create<T>(Constructor: { new (...args: any[]): T }): T {
     const paramsTypes: Array<IConstructor> = Reflect.getMetadata(
       'design:paramtypes',
