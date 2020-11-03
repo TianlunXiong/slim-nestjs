@@ -164,6 +164,24 @@ class MiddlewareNode {
   }
 }
 
+class RouteNode {
+  name = '';
+  method = ''
+  path = '';
+
+  setName(str: string) {
+    this.name = str;
+  }
+
+  setPath(str: string) {
+    this.path = str;
+  }
+
+  setMethod(str: string) {
+    this.method = str;
+  }
+}
+
 
 class ControllerNode {
   name = '';
