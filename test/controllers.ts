@@ -14,12 +14,13 @@ class AllList {
 
 class LikeMiddleWare implements MiddleWare {
   async use(ctx: Context, next: Next) {
+    console.log('123');
     ctx.body = 'jiu';
     await next();
   }
 }
 
-@Controller()
+@Controller('/')
 class Xiaobai {
   constructor(private inject: AllList) {}
 

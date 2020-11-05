@@ -10,12 +10,31 @@ import { injectableClassSet } from '../injector';
 
 class AppCore extends Koa {
   router = new Router();
-  controllerToMiddlewareMapping = new Map<IConstructor, IControllerMiddleWare[]>();
-  routerGraph = new Map<string, {}>();
+  controllerToMiddlewareMapping = new Map<
+    IConstructor,
+    IControllerMiddleWare[]
+  >();
+  graphRootNode = new GraphNode('root');
+  currentGraphNode: GraphNode = this.graphRootNode;
+  routeNode = new RouteNode('路由中间件');
 
   constructor() {
     super();
   }
+
+  use<NewStateT = {}, NewCustomT = {}>(
+    middleware: Koa.Middleware<NewStateT, NewCustomT>,
+  ): Koa<NewStateT, NewCustomT> {
+    const name = middleware.name || `匿名中间件(${MiddlewareNode.anonymousCount++})`;
+    if (name === 'dispatch') {
+      this.currentGraphNode = this.currentGraphNode.setNext(this.routeNode);
+    } else {
+      const middlewareNode = new MiddlewareNode(name, middleware);
+      this.currentGraphNode = this.currentGraphNode.setNext(middlewareNode);
+    }
+    return super.use(middleware);
+  }
+
   routeMapping(mapper: ControllerToRouterMapper) {
     const { mapping } = mapper;
     for (let [Controller, controllerRouter] of mapping) {
@@ -25,21 +44,42 @@ class AppCore extends Koa {
       for (let i = 0; i < subRoutes.length; i += 1) {
         const { method, pathRule, handler } = subRoutes[i];
         const rule = `/${prefix}/${pathRule}`
-          .replace(/\/+/, '/')
-          .replace(/\/$/, '');
+          .replace(/\/+/, '/');
+        const ruleNode = this.routeNode.setInnerNode(new RuleNode(`规则${RuleNode.count++}`, rule));
+        let middlewareNode;
+        let methodNode;
         if (middlewares.length) {
           for (let i = 0; i < middlewares.length; i += 1) {
             const { useFn, method } = middlewares[i];
             if (method) {
+              methodNode = ruleNode.setNext(new MethodNode(`方法${MethodNode.count++}`, method));
+              middlewareNode = methodNode.setNext(new MiddlewareNode(useFn.name || `匿名中间件(${MiddlewareNode.anonymousCount++})`, useFn));
               this.router[method](rule, useFn);
             } else {
+              middlewareNode = ruleNode.setNext(new MiddlewareNode(useFn.name || `匿名中间件(${MiddlewareNode.anonymousCount++})`, useFn));
               this.router.use(rule, useFn);
             }
           }
         }
+
         const controller = DependenceFactory.create<{
           [method: string]: Function;
         }>(Controller);
+        if (middlewareNode) {
+          middlewareNode.setNext(new ControllerNode(
+            Controller.name,
+            Controller,
+            handler,
+            controller,
+          ));
+        } else {
+          ruleNode.setNext(new ControllerNode(
+            Controller.name,
+            Controller,
+            handler,
+            controller,
+          ));
+        }
         this.router[method](rule, async (ctx, next) => {
           await controller[handler](ctx);
           await next();
@@ -49,8 +89,8 @@ class AppCore extends Koa {
   }
 
   /**
-   * 
-   * @param middlewareCtor 
+   *
+   * @param middlewareCtor
    * @param ctor
    * @description 为某个路由或者控制器提供中间件
    */
@@ -58,8 +98,8 @@ class AppCore extends Koa {
     middlewareCtor: { new (...args: any[]): T },
     ctor: IConstructor,
     config?: {
-      method: HttpMethod
-    }
+      method: HttpMethod;
+    },
   ): void;
   useForRoutes<T extends MiddleWare>(
     middlewareCtor: { new (...args: any[]): T },
@@ -73,22 +113,27 @@ class AppCore extends Koa {
     middlewareCtor: { new (...args: any[]): T },
     params: IConstructor | string | IPathParams,
     config?: {
-      method: HttpMethod
-    }
+      method: HttpMethod;
+    },
   ) {
     const middleware = DependenceFactory.create<MiddleWare>(middlewareCtor);
     const useFn: MiddleWareFunction = middleware.use.bind(middleware);
     if (typeof params === 'string') {
       const rule = params;
+      const ruleNode = this.routeNode.setInnerNode(new RuleNode(`规则${RuleNode.count++}`, rule));
+      const middlewareNode = ruleNode.setNext(new MiddlewareNode(middlewareCtor.name || `匿名中间件(${MiddlewareNode.anonymousCount++})`, useFn));
       this.router.use(rule, useFn);
     } else if (typeof params === 'object') {
       const { path, method } = params;
+      const ruleNode = this.routeNode.setInnerNode(new RuleNode(`规则${RuleNode.count++}`, path));
+      const methodNode = ruleNode.setNext(new MethodNode(`方法${MethodNode.count++}`, method));
+      const middlewareNode = methodNode.setNext(new MiddlewareNode(middlewareCtor.name || `匿名中间件(${MiddlewareNode.anonymousCount++})`, useFn));
       this.router[method](path, useFn);
     } else {
       const Ctor = params; // Controller
       const useFnWrapper: IControllerMiddleWare = {
         useFn,
-      }
+      };
       if (config) {
         const { method } = config;
         if (method) {
@@ -156,40 +201,79 @@ class Dependence<T> {
   }
 }
 
-class MiddlewareNode {
+class GraphNode {
   name = '';
+  next: Map<string, GraphNode> | null = null
 
-  setName(str: string) {
-    this.name = str;
+  constructor(name: string) {
+    this.name = name;
+  }
+  
+  setNext(node: GraphNode): GraphNode{
+    if (!this.next) {
+      this.next = new Map();
+    }
+    this.next.set(node.name, node);
+    return node;
   }
 }
 
-class RouteNode {
-  name = '';
-  method = ''
-  path = '';
+class MiddlewareNode<NewStateT = {}, NewCustomT = {}> extends GraphNode {
+  public static anonymousCount = 0;
+  useFn: Koa.Middleware<NewStateT, NewCustomT> | null = null
 
-  setName(str: string) {
-    this.name = str;
-  }
-
-  setPath(str: string) {
-    this.path = str;
-  }
-
-  setMethod(str: string) {
-    this.method = str;
+  constructor(name: string, fn: Koa.Middleware<NewStateT, NewCustomT>) {
+    super(name);
+    this.useFn = fn;
   }
 }
 
 
-class ControllerNode {
-  name = '';
-  middlewares: MiddlewareNode[] = [];
-  ctor: IConstructor | null = null;
+class RouteNode extends GraphNode {
+  innerNode: Map<string, GraphNode> | null = null
+  constructor(name: string) {
+    super(name);
+  }
 
-  setName(str: string) {
-    this.name = str;
+  setInnerNode(node: GraphNode): GraphNode{
+    if (!this.innerNode) {
+      this.innerNode = new Map();
+    }
+    this.innerNode.set(node.name, node);
+    return node;
+  }
+}
+
+class RuleNode extends GraphNode {
+  public static count = 0;
+  rule: string = '';
+
+  constructor(name: string, rule: string) {
+    super(name);
+    this.rule = rule;
+  }
+}
+
+class MethodNode extends GraphNode {
+  public static count = 0;
+  method: string = '';
+
+  constructor(name: string, method: string) {
+    super(name);
+    this.method = method;
+  }
+}
+
+class ControllerNode extends GraphNode {
+  Ctor: IConstructor | null = null;
+  controller: {} | null = null;
+  handler: string = '';
+
+  constructor(name: string, ctor: IConstructor, handler: string, controller: {}) {
+    super(name);
+    this.Ctor = ctor;
+    this.handler = handler;
+    this.controller = controller;
   }
 }
 
