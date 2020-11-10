@@ -12,9 +12,8 @@ class AllList {
   }
 }
 
-class LikeMiddleWare implements MiddleWare {
+class Student implements MiddleWare {
   async use(ctx: Context, next: Next) {
-    console.log('123');
     ctx.body = 'jiu';
     await next();
   }
@@ -35,4 +34,4 @@ class Xiaobai {
   }
 }
 
-export { LikeMiddleWare, Xiaobai };
+export { Student, Xiaobai };

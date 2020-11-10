@@ -1,26 +1,21 @@
-import App, { HttpMethod } from '../src';
-
-import { LikeMiddleWare, Xiaobai } from './controllers';
+import App from '../src';
+import './controllers';
 
 const app = new App();
 
-app.use(async (ctx, next) => {
+app.use(async function SSO(ctx, next) {
   await next();
-})
-
-app.useForRoutes(LikeMiddleWare, '/nk');
-app.useForRoutes(LikeMiddleWare, {
-  path: '/nk',
-  method: HttpMethod.GET,
 });
-app.useForRoutes(LikeMiddleWare, Xiaobai, { method: HttpMethod.GET })
-
 app.routes();
 
-app.use(async function Shiji(ctx, next){
+app.use(async function Log(ctx, next) {
   await next();
-})
+});
+
+app.use(async function Resource(ctx, next) {
+  await next();
+});
 
 app.listen(9001, () => {
-  console.log(app.graphRootNode.next?.get('匿名中间件(0)')?.next?.get('路由中间件'))
+  app.cycleLog();
 });
