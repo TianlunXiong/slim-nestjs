@@ -2,7 +2,18 @@
 
 ## Introduction
 
-A Dependency-Inject Framework based on Koa.
+A Dependency-Inject Framework Based On Koa. A Reduced Version Of The Well-Known Framework NestJS.
+
+## ToDo
+- [x] 控制器的基本修饰器（Controller、Get、Post等）
+- [x] 控制器的依赖注入
+- [ ] 中间件的依赖注入（待测试）
+- [x] 请求/响应循环基本节点
+- [ ] 请求/响应循环日志系统
+- [ ] 请求/响应循环可视化监控系统
+- [ ] 测试用例
+- [ ] 集成前端Webpack开发环境
+- [ ] 集成ORM数据库管理系统
 
 ## install
 
@@ -30,11 +41,6 @@ app.use(async (ctx, next) => {
 })
 app.routes(); // resolve controllers and middlewares 
 app.listen(PORT, () => console.log(`the server run on ${PORT}`));
-
-```
-
-then
-```
 
 ```
 
